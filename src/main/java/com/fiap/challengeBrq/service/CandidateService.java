@@ -2,13 +2,14 @@ package com.fiap.challengeBrq.service;
 
 
 import com.fiap.challengeBrq.entities.Candidate;
+import com.fiap.challengeBrq.exception.CandidateNotFoundException;
 import com.fiap.challengeBrq.repo.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class CandidateService {
@@ -25,15 +26,22 @@ public class CandidateService {
     }
 
     public Candidate findByName(String name) {
-        return repository.findByNameLike(name);
+        Optional<Candidate> candidate = repository.findByNameLike(name);
+        return candidate
+                .orElseThrow(() -> new CandidateNotFoundException());
+
     }
 
     public Candidate getByEmail(String email) {
-        return repository.findByEmail(email);
+        Optional<Candidate> candidate = repository.findByEmail(email);
+        return candidate
+                .orElseThrow(() -> new CandidateNotFoundException());
     }
 
     public Candidate getByCpf(String cpf) {
-        return repository.findByCpf(cpf);
+        Optional<Candidate> candidate = repository.findByCpf(cpf);
+        return candidate
+                .orElseThrow(() -> new CandidateNotFoundException());
     }
 
     public Page<Candidate> findBySkills(String skills, Pageable pageable) {
@@ -42,5 +50,9 @@ public class CandidateService {
 
     public Page<Candidate> findByCertifications(String certifications, Pageable pageable) {
         return repository.findByCertifications(certifications, pageable);
+    }
+
+    public Page<Candidate> findByCertificationsAndSkill(String certifications, String skills, Pageable pageable) {
+        return repository.findByCertificationsAndSkills(certifications, skills, pageable);
     }
 }
