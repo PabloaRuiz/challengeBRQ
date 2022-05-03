@@ -40,7 +40,7 @@ public class CandidateController {
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByEmail(@PathVariable String email){
-        Candidate obj = service.getByEmail(email);
+        Candidate obj = service.findByEmail(email);
         CandidateDto dtoObj = new CandidateDto()
                 .convertCandidate(obj);
         return dtoObj;
@@ -50,7 +50,7 @@ public class CandidateController {
     @GetMapping("/cpf/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByCpf(@PathVariable String cpf){
-        Candidate obj = service.getByCpf(cpf);
+        Candidate obj = service.findByCpf(cpf);
         CandidateDto dtoObj = new CandidateDto()
                 .convertCandidate(obj);
         return dtoObj;

@@ -59,14 +59,14 @@ public class CandidateServiceTest {
 
     @Test
     @DisplayName("Buscando candidato por e-mail")
-    void getByEmail() {
+    void findByEmail() {
         Candidate candidate = CreateCandidate();
 
         Mockito.when(repository.findByEmail(candidate.getEmail()))
                 .thenReturn(Optional.of(CreateCandidate()));
 
 
-        Candidate candidateExists = service.getByEmail(candidate.getEmail());
+        Candidate candidateExists = service.findByEmail(candidate.getEmail());
 
         Assertions.assertThat(candidateExists).isNotNull();
         Assertions.assertThat(candidateExists.getName()).isEqualTo("Pablo");
@@ -79,14 +79,14 @@ public class CandidateServiceTest {
 
     @Test
     @DisplayName("Buscando candidato por cpf")
-    void getByCpf() {
+    void findByCpf() {
         Candidate candidate = CreateCandidate();
 
         Mockito.when(repository.findByCpf(candidate.getCpf()))
                 .thenReturn(Optional.of(CreateCandidate()));
 
 
-        Candidate candidateExists = service.getByCpf(candidate.getCpf());
+        Candidate candidateExists = service.findByCpf(candidate.getCpf());
 
         Assertions.assertThat(candidateExists).isNotNull();
         Assertions.assertThat(candidateExists.getName()).isEqualTo("Pablo");
@@ -95,6 +95,55 @@ public class CandidateServiceTest {
         Assertions.assertThat(candidateExists.getTelephone()).isEqualTo(32321388);
         Assertions.assertThat(candidateExists.getGender()).isEqualTo(Gender.Masculino);
         Assertions.assertThat(candidateExists.getBirth()).isEqualTo(CreateCandidate().getBirth());
+    }
+
+    @Test
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por nome")
+    void findByNameError() {
+        Candidate candidate = CreateCandidate();
+
+        Mockito.when(repository.findByNameLike(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+
+        Throwable exception = Assertions.catchThrowable(
+                () -> service.findByName(candidate.getName()));
+
+        Assertions.assertThat(exception)
+                .isInstanceOf(CandidateNotFoundException.class);
+
+    }
+
+    @Test
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por email")
+    void findByEmailError() {
+        Candidate candidate = CreateCandidate();
+
+        Mockito.when(repository.findByEmail(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+
+        Throwable exception = Assertions.catchThrowable(
+                () -> service.findByEmail(candidate.getEmail()));
+
+        Assertions.assertThat(exception)
+                .isInstanceOf(CandidateNotFoundException.class);
+
+    }
+
+
+    @Test
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por cpf")
+    void findByCpfError() {
+        Candidate candidate = CreateCandidate();
+
+        Mockito.when(repository.findByCpf(Mockito.anyString()))
+                .thenReturn(Optional.empty());
+
+        Throwable exception = Assertions.catchThrowable(
+                () -> service.findByCpf(candidate.getCpf()));
+
+        Assertions.assertThat(exception)
+                .isInstanceOf(CandidateNotFoundException.class);
+
     }
 
 }

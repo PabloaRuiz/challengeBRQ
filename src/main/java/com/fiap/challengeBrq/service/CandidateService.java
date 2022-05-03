@@ -32,13 +32,13 @@ public class CandidateService {
 
     }
 
-    public Candidate getByEmail(String email) {
+    public Candidate findByEmail(String email) {
         Optional<Candidate> candidate = repository.findByEmail(email);
         return candidate
                 .orElseThrow(() -> new CandidateNotFoundException());
     }
 
-    public Candidate getByCpf(String cpf) {
+    public Candidate findByCpf(String cpf) {
         Optional<Candidate> candidate = repository.findByCpf(cpf);
         return candidate
                 .orElseThrow(() -> new CandidateNotFoundException());

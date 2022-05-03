@@ -15,15 +15,9 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
     Optional<Candidate> findByNameLike(String name);
 
-    boolean existsByName(String name);
-
     Optional<Candidate> findByEmail(String email);
 
-    boolean existsByEmail(String email);
-
     Optional<Candidate> findByCpf(String cpf);
-
-    boolean existsByCpf(String cpf);
 
     @Query(value = "SELECT * FROM tb_candidate as t1 inner join tb_skill as t2 on t1.id_candidate = t2.id_skill_candidate where t2.description = :skills",
     nativeQuery = true)
