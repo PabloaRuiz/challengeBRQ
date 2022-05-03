@@ -8,6 +8,7 @@ import com.fiap.challengeBrq.entities.enums.Gender;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -54,4 +55,17 @@ public class CandidateDto {
                 candidate.getCertifications(),
                 candidate.getSkills());
     }
+
+    public CandidateDto convertOptionalCandidate (Optional<Candidate> candidate) {
+        return new CandidateDto(
+                candidate.get().getName(),
+                candidate.get().getCpf(),
+                candidate.get().getEmail(),
+                candidate.get().getTelephone(),
+                candidate.get().getGender(),
+                candidate.get().getBirth(),
+                candidate.get().getCertifications(),
+                candidate.get().getSkills());
+    }
+
 }

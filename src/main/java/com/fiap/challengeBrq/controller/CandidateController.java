@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,8 @@ public class CandidateController {
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByName(@PathVariable String name){
         Candidate obj = service.findByName(name);
-        CandidateDto dtoObj = new CandidateDto().convertCandidate(obj);
+        CandidateDto dtoObj = new CandidateDto()
+                .convertCandidate(obj);
         return dtoObj;
     }
 
@@ -38,18 +40,17 @@ public class CandidateController {
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByEmail(@PathVariable String email){
-        Candidate obj = service.getByEmail(email);
+        Candidate obj = service.findByEmail(email);
         CandidateDto dtoObj = new CandidateDto()
                 .convertCandidate(obj);
         return dtoObj;
     }
 
 
-
     @GetMapping("/cpf/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByCpf(@PathVariable String cpf){
-        Candidate obj = service.getByCpf(cpf);
+        Candidate obj = service.findByCpf(cpf);
         CandidateDto dtoObj = new CandidateDto()
                 .convertCandidate(obj);
         return dtoObj;
@@ -74,6 +75,21 @@ public class CandidateController {
     @ResponseStatus(HttpStatus.OK)
     public Page<CandidateDto> findByCertifications(@PathVariable String certification, Pageable pageable){
         Page<Candidate> result = service.findByCertifications(certification, pageable);
+        List<CandidateDto> list = result.getContent()
+                .stream()
+                .map(candidate -> {
+                    CandidateDto dtoObj = new CandidateDto()
+                            .convertCandidate(candidate);
+                    return dtoObj;
+                }).collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageable, result.getTotalElements());
+    }
+
+    @GetMapping("/certification/{certification}/skill/{skill}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CandidateDto> findByCertificationsAndSkill(@PathVariable String certification, @PathVariable String skill, Pageable pageable){
+        Page<Candidate> result = service.findByCertificationsAndSkill(certification, skill, pageable);
         List<CandidateDto> list = result.getContent()
                 .stream()
                 .map(candidate -> {
