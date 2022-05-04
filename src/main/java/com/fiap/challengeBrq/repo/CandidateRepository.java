@@ -15,6 +15,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
     Optional<Candidate> findByNameLike(String name);
 
+    Boolean existsByName(String name);
+
     Optional<Candidate> findByEmail(String email);
 
     Optional<Candidate> findByCpf(String cpf);

@@ -46,16 +46,18 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.of(CreateCandidate()));
 
 
-        Candidate candidateExists = service.findByName(candidate.getName());
+        Optional<Candidate> candidateExists =
+                service.findByName(candidate.getName());
 
-        Assertions.assertThat(candidateExists).isNotNull();
-        Assertions.assertThat(candidateExists.getName()).isEqualTo("Pablo");
-        Assertions.assertThat(candidateExists.getCpf()).isEqualTo("44951360988");
-        Assertions.assertThat(candidateExists.getEmail()).isEqualTo("Pabloa@Fiap.com.br");
-        Assertions.assertThat(candidateExists.getTelephone()).isEqualTo(32321388);
-        Assertions.assertThat(candidateExists.getGender()).isEqualTo(Gender.Masculino);
-        Assertions.assertThat(candidateExists.getBirth()).isEqualTo(CreateCandidate().getBirth());
+        Assertions.assertThat(candidateExists).isPresent();
+        Assertions.assertThat(candidateExists.get().getName()).isEqualTo("Pablo");
+        Assertions.assertThat(candidateExists.get().getCpf()).isEqualTo("44951360988");
+        Assertions.assertThat(candidateExists.get().getEmail()).isEqualTo("Pabloa@Fiap.com.br");
+        Assertions.assertThat(candidateExists.get().getTelephone()).isEqualTo(32321388);
+        Assertions.assertThat(candidateExists.get().getGender()).isEqualTo(Gender.Masculino);
+        Assertions.assertThat(candidateExists.get().getBirth()).isEqualTo(CreateCandidate().getBirth());
     }
+
 
     @Test
     @DisplayName("Buscando candidato por e-mail")
@@ -66,15 +68,15 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.of(CreateCandidate()));
 
 
-        Candidate candidateExists = service.findByEmail(candidate.getEmail());
+        Optional<Candidate> candidateExists = service.findByEmail(candidate.getEmail());
 
-        Assertions.assertThat(candidateExists).isNotNull();
-        Assertions.assertThat(candidateExists.getName()).isEqualTo("Pablo");
-        Assertions.assertThat(candidateExists.getCpf()).isEqualTo("44951360988");
-        Assertions.assertThat(candidateExists.getEmail()).isEqualTo("Pabloa@Fiap.com.br");
-        Assertions.assertThat(candidateExists.getTelephone()).isEqualTo(32321388);
-        Assertions.assertThat(candidateExists.getGender()).isEqualTo(Gender.Masculino);
-        Assertions.assertThat(candidateExists.getBirth()).isEqualTo(CreateCandidate().getBirth());
+        Assertions.assertThat(candidateExists).isPresent();
+        Assertions.assertThat(candidateExists.get().getName()).isEqualTo("Pablo");
+        Assertions.assertThat(candidateExists.get().getCpf()).isEqualTo("44951360988");
+        Assertions.assertThat(candidateExists.get().getEmail()).isEqualTo("Pabloa@Fiap.com.br");
+        Assertions.assertThat(candidateExists.get().getTelephone()).isEqualTo(32321388);
+        Assertions.assertThat(candidateExists.get().getGender()).isEqualTo(Gender.Masculino);
+        Assertions.assertThat(candidateExists.get().getBirth()).isEqualTo(CreateCandidate().getBirth());
     }
 
     @Test
@@ -86,19 +88,19 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.of(CreateCandidate()));
 
 
-        Candidate candidateExists = service.findByCpf(candidate.getCpf());
+        Optional<Candidate> candidateExists = service.findByCpf(candidate.getCpf());
 
-        Assertions.assertThat(candidateExists).isNotNull();
-        Assertions.assertThat(candidateExists.getName()).isEqualTo("Pablo");
-        Assertions.assertThat(candidateExists.getCpf()).isEqualTo("44951360988");
-        Assertions.assertThat(candidateExists.getEmail()).isEqualTo("Pabloa@Fiap.com.br");
-        Assertions.assertThat(candidateExists.getTelephone()).isEqualTo(32321388);
-        Assertions.assertThat(candidateExists.getGender()).isEqualTo(Gender.Masculino);
-        Assertions.assertThat(candidateExists.getBirth()).isEqualTo(CreateCandidate().getBirth());
+        Assertions.assertThat(candidateExists).isPresent();
+        Assertions.assertThat(candidateExists.get().getName()).isEqualTo("Pablo");
+        Assertions.assertThat(candidateExists.get().getCpf()).isEqualTo("44951360988");
+        Assertions.assertThat(candidateExists.get().getEmail()).isEqualTo("Pabloa@Fiap.com.br");
+        Assertions.assertThat(candidateExists.get().getTelephone()).isEqualTo(32321388);
+        Assertions.assertThat(candidateExists.get().getGender()).isEqualTo(Gender.Masculino);
+        Assertions.assertThat(candidateExists.get().getBirth()).isEqualTo(CreateCandidate().getBirth());
     }
 
     @Test
-    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por nome")
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato retorne null  na busca por nome")
     void findByNameError() {
         Candidate candidate = CreateCandidate();
 
@@ -106,15 +108,17 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.empty());
 
         Throwable exception = Assertions.catchThrowable(
-                () -> service.findByName(candidate.getName()));
+                () -> service.findByName(null));
 
         Assertions.assertThat(exception)
-                .isInstanceOf(CandidateNotFoundException.class);
+                .isInstanceOf(CandidateNotFoundException.class).info.descriptionText()
+                .equals("Candidato não encontrado, poderia por gentileza verificar as informações.");
 
+        Mockito.verify(repository, Mockito.never()).findByNameLike(Mockito.anyString());
     }
 
     @Test
-    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por email")
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato retorne null na busca por email")
     void findByEmailError() {
         Candidate candidate = CreateCandidate();
 
@@ -122,16 +126,19 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.empty());
 
         Throwable exception = Assertions.catchThrowable(
-                () -> service.findByEmail(candidate.getEmail()));
+                () -> service.findByEmail(null));
 
         Assertions.assertThat(exception)
-                .isInstanceOf(CandidateNotFoundException.class);
+                .isInstanceOf(CandidateNotFoundException.class).info.descriptionText()
+                .equals("Candidato não encontrado, poderia por gentileza verificar as informações.");
+
+        Mockito.verify(repository, Mockito.never()).findByNameLike(Mockito.anyString());
 
     }
 
 
     @Test
-    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato não seja encontrado na busca por cpf")
+    @DisplayName("Deve lançar um erro customizado NotFound caso o candidato retorne null na busca por cpf")
     void findByCpfError() {
         Candidate candidate = CreateCandidate();
 
@@ -139,12 +146,11 @@ public class CandidateServiceTest {
                 .thenReturn(Optional.empty());
 
         Throwable exception = Assertions.catchThrowable(
-                () -> service.findByCpf(candidate.getCpf()));
+                () -> service.findByCpf(null));
 
         Assertions.assertThat(exception)
-                .isInstanceOf(CandidateNotFoundException.class);
-
+                .isInstanceOf(CandidateNotFoundException.class).info.descriptionText()
+                .equals("Candidato não encontrado, poderia por gentileza verificar as informações.");
     }
-
 }
 
