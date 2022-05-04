@@ -10,9 +10,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -30,30 +32,29 @@ public class CandidateController {
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByName(@PathVariable String name){
-        Candidate obj = service.findByName(name);
-        CandidateDto dtoObj = new CandidateDto()
-                .convertCandidate(obj);
-        return dtoObj;
+       return service.findByName(name)
+               .map(candidate ->
+                   new CandidateDto().convertCandidate(candidate))
+               .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
     }
 
 
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByEmail(@PathVariable String email){
-        Candidate obj = service.findByEmail(email);
-        CandidateDto dtoObj = new CandidateDto()
-                .convertCandidate(obj);
-        return dtoObj;
+        return service.findByEmail(email).
+                map(candidate ->
+                        new CandidateDto().convertCandidate(candidate))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
     }
 
 
     @GetMapping("/cpf/{cpf}")
     @ResponseStatus(HttpStatus.OK)
     public CandidateDto findByCpf(@PathVariable String cpf){
-        Candidate obj = service.findByCpf(cpf);
-        CandidateDto dtoObj = new CandidateDto()
-                .convertCandidate(obj);
-        return dtoObj;
+       return service.findByCpf(cpf)
+                .map(candidate -> new CandidateDto().convertCandidate(candidate))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/skill/{skill}")

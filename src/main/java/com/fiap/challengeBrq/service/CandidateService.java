@@ -4,6 +4,7 @@ package com.fiap.challengeBrq.service;
 import com.fiap.challengeBrq.entities.Candidate;
 import com.fiap.challengeBrq.exception.CandidateNotFoundException;
 import com.fiap.challengeBrq.repo.CandidateRepository;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,23 +26,28 @@ public class CandidateService {
         return repository.save(candidate);
     }
 
-    public Candidate findByName(String name) {
-        Optional<Candidate> candidate = repository.findByNameLike(name);
-        return candidate
-                .orElseThrow(() -> new CandidateNotFoundException());
-
+    public Optional<Candidate> findByName(String name) {
+        if (repository.findByNameLike(name).isEmpty()) {
+            throw new CandidateNotFoundException();
+        }  Optional<Candidate> candidate = repository.findByNameLike(name);
+            return candidate;
     }
 
-    public Candidate findByEmail(String email) {
+    public Optional<Candidate>  findByEmail(String email) {
+       if(repository.findByEmail(email).isEmpty()) {
+           throw new CandidateNotFoundException();
+       }
         Optional<Candidate> candidate = repository.findByEmail(email);
-        return candidate
-                .orElseThrow(() -> new CandidateNotFoundException());
+        return candidate;
+
     }
 
-    public Candidate findByCpf(String cpf) {
+    public Optional<Candidate> findByCpf(String cpf) {
+        if (repository.findByCpf(cpf).isEmpty()) {
+         throw new CandidateNotFoundException();
+        }
         Optional<Candidate> candidate = repository.findByCpf(cpf);
-        return candidate
-                .orElseThrow(() -> new CandidateNotFoundException());
+        return candidate;
     }
 
     public Page<Candidate> findBySkills(String skills, Pageable pageable) {
