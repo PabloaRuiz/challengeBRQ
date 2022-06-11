@@ -1,0 +1,7 @@
+FROM openjdk:11
+WORKDIR /challengeBrq
+ARG PORT_BUILD=8080
+ENV PORT=$PORT_BUILD
+EXPOSE $PORT_BUILD
+COPY . .
+ENTRYPOINT ["java", "-jar", "challengeBrq-0.0.1-SNAPSHOT.jar"]
