@@ -10,34 +10,41 @@ Buscas de candidatos - permitir a busca de candidatos por campos-chave (
 - certificações
 - Skills e certificações
 
-Exemplos Métodos GET 
+Métodos GET 
 
-- nome
 ```sh
-http://localhost:8080/api/v1/candidate/name/{name}
-```
+
+ - nome
+/api/v1/candidate/name/{name}
 
 - e-mail
-```sh
-http://localhost:8080/api/v1/candidate/email/{email}
-```
+/api/v1/candidate/email/{email}
 
 - CPF
-```sh
-http://localhost:8080/api/v1/candidate/cpf/{cpf}
-```
+/api/v1/candidate/cpf/{cpf}
 
 - skills
-```sh
-http://localhost:8080/api/v1/candidate/skill/{skill}
-```
+/api/v1/candidate/skill/{skill}
 
 - certificações
-```sh
-http://localhost:8080/api/v1/candidate/certification/{certification}
-```
+/api/v1/candidate/certification/{certification}
 
 - skills e certificações
+/api/v1/candidate/certification/{certification}/skill/{skill}
+```
+
+
+## Docker 
+
 ```sh
-http://localhost:8080/api/v1/candidate/certification/{certification}/skill/{skill}
+
+dockerhub 
+docker pull pdevtest/java-app:1.0
+
+build 
+docker build -t pdevtest/java-app:1.0 .
+
+docker run 
+docker run -p 8080:8080 java-app:1.0
+
 ```
